@@ -168,6 +168,9 @@ def sortEVD(lamb, U):
     return lamb[idx], U[:,idx]
 
 def nldr_visualization(W):
+    """
+    nldr: Non-Linear Dimensionality Reduction
+    """
     
     # Compute normalized graph Laplacian
     L = graph_laplacian(W)
