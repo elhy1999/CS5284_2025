@@ -367,6 +367,9 @@ def construct_knn_graph(X,k,dist):
     ######################################
     # Construct a k-NN graph with Zelnik-Perona technique
     # "Self-Tuning Spectral Clustering", 2005
+    #
+    # Taking A_ij = exp( -|x_i-x_j|^2 / (sigma_i*sigma_j) )
+    # Lecture 2 Slide 36
     ######################################
     if dist == 'euclidean_zelnik_perona':
         
@@ -803,7 +806,6 @@ def compute_pcut(W,Cgt,R,speed=5.0,max_nb_iter=50,display=False):
 ######################################
 
 def construct_kernel(X,type_kernel,parameters=None):
-#def construct_kernel(X,type_kernel):
 
     start = time.time()
     n = X.shape[0]

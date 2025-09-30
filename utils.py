@@ -687,12 +687,12 @@ def compute_kernel_kmeans_spectral(
     Ones = np.ones((1, n))
 
     # Eigenvalue Decomposition (EVD)
-    A = (pow(Theta, 0.5)).dot(Ker.dot(pow(Theta, 0.5)))
+    A = (pow(Theta, 0.5)).dot(Ker.dot(pow(Theta, 0.5))) # Finding matrix A in Lect 3 Slide 30 
     lamb, U = scipy.sparse.linalg.eigsh(A, k=nc, which="LM")
     U = U[:, ::-1]  # largest = index 0
     lamb = lamb[::-1]
 
-    # Pre-process embedding coordinates Y
+    # Pre-process embedding coordinates Y to make each row of Y zero-centered and L2 normalized
     Y = U - np.mean(U, axis=0)  # zero-centered data
     Y = (Y.T / np.sqrt(np.sum(Y**2, axis=1) + 1e-10)).T  # L2 normalization of rows of Y
 
@@ -830,7 +830,22 @@ def compute_pcut(
 def construct_kernel(
     X: np.ndarray, type_kernel: str, parameters: Optional[List[float]] = None
 ) -> np.ndarray:
-    # def construct_kernel(X:type_kernel):
+    """
+    Note: The kNN kernels ('kNN_gaussian', 'kNN_cosine', 'kNN_cosine_binary') only take the
+    nearest k neighbors into account when constructing the kernel matrix.
+    The other kernels ('linear', 'polynomial', 'gaussian') are full kernels (i.e. non-sparse)
+    because they consider all pairwise data points, even points that are far away from each other.
+    Input:
+        X: Data matrix. Size = n x d.
+        type_kernel: Type of kernels: 'linear', 'polynomial', 'gaussian', 'kNN_gaussian', 'kNN_cosine', 'kNN_cosine_binary'.
+        parameters: Parameters of the kernel.
+            For 'linear' kernel, parameters=None.
+            For 'gaussian' kernel, parameters=None (automatic a) or parameters=a (given a).
+            For 'polynomial' kernel, parameters=[a,b,c].
+            For 'kNN_gaussian' kernel, parameters=k (number of nearest neighbors).
+            For 'kNN_cosine' kernel, parameters=k (number of nearest neighbors).
+            For 'kNN_cosine_binary' kernel, parameters=k (number of nearest neighbors).
+    """
 
     start = time.time()
     n = X.shape[0]

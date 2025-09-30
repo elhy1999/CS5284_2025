@@ -1,0 +1,89 @@
+Useful helper functions to note:
+
+def construct_kernel(
+    X: np.ndarray, type_kernel: str, parameters: Optional[List[float]] = None
+) -> np.ndarray:
+    ...
+
+def compute_kernel_kmeans_EM(
+    nc: int, Ker: np.ndarray, Theta: np.ndarray, nb_trials: int
+) -> Tuple[np.ndarray, float]:
+    ...
+
+def compute_purity(C_computed: np.ndarray, C_grndtruth: np.ndarray, R: int) -> float:
+    ...
+
+def compute_kernel_kmeans_spectral(
+    nc: int, Ker: np.ndarray, Theta: np.ndarray
+) -> Tuple[np.ndarray, float]:
+    ...
+
+When to use which pre-processing technique:
+Great question 👍. The slide you shared lists common **data pre-processing techniques** (centering, variance normalization, L2 projection, min–max scaling).
+Which one to choose before **Graph Machine Learning (Graph ML)** depends on the **task**, **model type**, and **data properties**. Let me break it down:
+
+---
+
+### 1. **Centering (zero-mean)**
+
+* **Use when**: Features have large absolute values or offsets that don’t carry semantic meaning.
+* **Example in Graph ML**: Node features are counts (like number of interactions, words, sales). Centering prevents bias toward high-value nodes.
+* **Why**: Graph neural networks (GNNs) aggregate features from neighbors; without centering, large offsets can propagate and dominate message passing.
+
+---
+
+### 2. **Variance normalization (z-scoring)**
+
+* **Use when**: Features have different scales (e.g., age vs. income, word frequencies vs. embeddings).
+* **Example**: In a citation network, node features might be publication counts (0–1000) and binary topic flags (0/1). Z-scoring ensures balanced influence.
+* **Why**: Prevents features with large variance from dominating learning. Important when using Euclidean distances or dot products inside kernels.
+
+---
+
+### 3. **Projection on L2-sphere**
+
+* **Use when**: You want to preserve only the **direction** of feature vectors, not their magnitude.
+* **Example**: When node features are **embeddings** (word2vec, BERT, etc.), cosine similarity is more meaningful than Euclidean distance.
+* **Why**: Ensures all node embeddings lie on the same scale → avoids bias from vector norms.
+* **Typical in**: Graph similarity tasks, spectral clustering, graph kernels.
+
+---
+
+### 4. **Min–max normalization ([0,1] scaling)**
+
+* **Use when**: You want to compare heterogeneous features on the same relative scale.
+* **Example**: In social networks, normalize attributes like number of friends (0–10,000) and profile completeness (0–1).
+* **Why**: Useful for visualization, distance-based methods, or models sensitive to feature range (e.g., GraphSAGE with concatenated features).
+
+---
+
+### ✅ Practical Guide for Graph ML
+
+* **GNNs (GCN, GAT, GraphSAGE)**: Usually **z-scoring per feature dimension** (mean=0, std=1). L2-normalization if input is embeddings.
+* **Spectral Graph ML (e.g., spectral clustering, Laplacian kernels)**: Often **L2-normalization** because cosine similarity matters.
+* **Distance-based methods (kNN graphs, graph kernels)**: **Centering + variance normalization** to make distances meaningful.
+* **Heterogeneous node attributes (categorical + numerical)**: Usually **min–max scaling** after encoding.
+* **Pretrained embeddings as input**: **L2-normalization** is strongly recommended.
+
+---
+
+👉 Rule of thumb:
+
+* If features are **raw numeric values** → z-score.
+* If features are **embeddings** → L2-normalize.
+* If features are **mixed scale** → min–max scale.
+* Always consider **centered data** before graph Laplacians or kernels.
+
+---
+
+eigsh or eigs?
+eigsh -> Square symmetric matrices
+eigs -> General
+Note: Prof always tends to normalize the eigenvectors taken directly from those functions:
+v <- v / ||v||2
+
+
+TODO:
+Complexity
+In-Lecture Qns
+Tutorial slides
