@@ -87,3 +87,9 @@ TODO:
 Complexity
 X In-Lecture Qns
 X Tutorial slides
+
+
+Complexities
+- Graph construction
+  - Exact construction: O(n^2 d), where n=num_data nad d=num_features
+  - Approximate technique i.e. kd-trees: O(nlogn d)
