@@ -85,5 +85,5 @@ v <- v / ||v||2
 
 TODO:
 Complexity
-In-Lecture Qns
-Tutorial slides
+X In-Lecture Qns
+X Tutorial slides
