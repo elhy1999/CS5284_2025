@@ -89,7 +89,26 @@ X In-Lecture Qns
 X Tutorial slides
 
 
-Complexities
-- Graph construction
-  - Exact construction: O(n^2 d), where n=num_data nad d=num_features
-  - Approximate technique i.e. kd-trees: O(nlogn d)
+Complexity:
+
+Graph Construction
+- Exact: Time - O(n^2 d), Space - O(E)
+- Approximate (kd-trees): Time - O(nlogn d), Space - O(E)
+
+Generating Kernel Matrix, K = phi phi^T: Time - O(n^2 d)
+EVD: Time - O(n^2 k), Space - O(n^2)
+     Also cannot be parallelizable
+
+K-Means
+- Vanilla EM: Time - O(n d k num_iter)
+- Inefficient Kernel K-Means (Calculating phi(x)): Time - O(n d' k num_iter), where d' >> d
+- Efficient Kernel K-Means (Kernel Trick): Time - O(n^2 d + n^2 k num_iter)
+- Spectral K-Means: Time - O(n^2 d + n^2 k) # O(n^2 d) for generating the Kernel matrix, and O(n^2 k) for Vanilla K-Means on spectral embeddings
+- In general, greedy data clustering methods: Time - O(n^2 d k)
+              spectral methods              : Time - O(n^2 d + n^2 k)
+              graph clustering              : Time - O(n^2) for graph construction, and O(E) for Metis and O(E^1.5 k) for spectral methods
+
+PageRank
+- EVD         : Time - O(n^2), Space - O(n^2)
+- Power method: Time - O(EK), Space - O(E)
+
